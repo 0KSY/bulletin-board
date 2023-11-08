@@ -80,8 +80,15 @@ public interface PostingMapper {
 
         response.setParentCommentResponses(parentCommentResponses);
 
-        return response;
 
+        if(posting.getPostingLikes() != null){
+            response.setLikeCount(posting.getPostingLikes().size());
+        }
+        else{
+            response.setLikeCount(0);
+        }
+
+        return response;
 
     }
 

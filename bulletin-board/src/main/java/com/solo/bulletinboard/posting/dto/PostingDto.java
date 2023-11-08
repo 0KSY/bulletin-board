@@ -32,23 +32,11 @@ public class PostingDto {
         private long postingId;
         private String title;
         private String content;
+        private int likeCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private MemberResponse memberResponse;
-//        private List<CommentResponse> commentResponses;
         private List<ParentCommentResponse> parentCommentResponses;
-    }
-
-
-    @Getter
-    @Setter
-    @Builder
-    public static class CommentResponse{
-        private long commentId;
-        private String content;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
-        private CommentMemberResponse commentMemberResponse;
     }
 
     @Getter

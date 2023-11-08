@@ -24,7 +24,7 @@ public class PostingService {
     }
 
 
-    private Posting findVerifiedPosting(long postingId){
+    public Posting findVerifiedPosting(long postingId){
         Optional<Posting> optionalPosting = postingRepository.findById(postingId);
 
         Posting findPosting = optionalPosting

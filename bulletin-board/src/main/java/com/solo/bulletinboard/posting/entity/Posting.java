@@ -2,6 +2,7 @@ package com.solo.bulletinboard.posting.entity;
 
 import com.solo.bulletinboard.comment.entity.Comment;
 import com.solo.bulletinboard.member.entity.Member;
+import com.solo.bulletinboard.postingLike.entity.PostingLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -38,5 +39,8 @@ public class Posting {
 
     @OneToMany(mappedBy = "posting", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "posting", cascade = CascadeType.REMOVE)
+    private List<PostingLike> postingLikes;
 
 }
