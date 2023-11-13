@@ -6,6 +6,8 @@ import com.solo.bulletinboard.posting.dto.PostingDto;
 import com.solo.bulletinboard.posting.entity.Posting;
 import com.solo.bulletinboard.posting.mapper.PostingMapper;
 import com.solo.bulletinboard.posting.service.PostingService;
+import com.solo.bulletinboard.tag.entity.Tag;
+import com.solo.bulletinboard.tag.service.TagService;
 import com.solo.bulletinboard.utils.UriCreator;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;

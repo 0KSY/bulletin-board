@@ -4,6 +4,8 @@ import com.solo.bulletinboard.comment.entity.Comment;
 import com.solo.bulletinboard.member.entity.Member;
 import com.solo.bulletinboard.posting.dto.PostingDto;
 import com.solo.bulletinboard.posting.entity.Posting;
+import com.solo.bulletinboard.postingTag.entity.PostingTag;
+import com.solo.bulletinboard.tag.entity.Tag;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -24,6 +26,24 @@ public interface PostingMapper {
         posting.setTitle(postingPostDto.getTitle());
         posting.setContent(postingPostDto.getContent());
         posting.setMember(member);
+
+        if(postingPostDto.getPostingTagDtos() != null){
+            List<PostingTag> postingTags = postingPostDto.getPostingTagDtos().stream()
+                    .map(postingTagDto -> {
+                        PostingTag postingTag = new PostingTag();
+                        Tag tag = new Tag();
+                        tag.setTagName(postingTagDto.getTagName());
+
+                        postingTag.setTag(tag);
+                        postingTag.setPosting(posting);
+
+                        return postingTag;
+                    }).collect(Collectors.toList());
+
+            posting.setPostingTags(postingTags);
+
+
+        }
 
         return posting;
 
@@ -86,6 +106,21 @@ public interface PostingMapper {
         }
         else{
             response.setLikeCount(0);
+        }
+
+
+        List<PostingTag> postingTags = posting.getPostingTags();
+
+        if(postingTags != null){
+            List<PostingDto.TagResponse> tagResponses
+                    = postingTags.stream()
+                    .map(postingTag -> PostingDto.TagResponse.builder()
+                            .tagId(postingTag.getTag().getTagId())
+                            .tagName(postingTag.getTag().getTagName())
+                            .build()
+                    ).collect(Collectors.toList());
+
+            response.setTagResponses(tagResponses);
         }
 
         return response;

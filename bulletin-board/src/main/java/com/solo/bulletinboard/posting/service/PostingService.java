@@ -4,6 +4,9 @@ import com.solo.bulletinboard.exception.BusinessLogicException;
 import com.solo.bulletinboard.exception.ExceptionCode;
 import com.solo.bulletinboard.posting.entity.Posting;
 import com.solo.bulletinboard.posting.repository.PostingRepository;
+import com.solo.bulletinboard.postingTag.entity.PostingTag;
+import com.solo.bulletinboard.tag.entity.Tag;
+import com.solo.bulletinboard.tag.repository.TagRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,11 +21,12 @@ import java.util.Optional;
 public class PostingService {
 
     private final PostingRepository postingRepository;
+    private final TagRepository tagRepository;
 
-    public PostingService(PostingRepository postingRepository) {
+    public PostingService(PostingRepository postingRepository, TagRepository tagRepository) {
         this.postingRepository = postingRepository;
+        this.tagRepository = tagRepository;
     }
-
 
     public Posting findVerifiedPosting(long postingId){
         Optional<Posting> optionalPosting = postingRepository.findById(postingId);
@@ -34,6 +38,19 @@ public class PostingService {
     }
 
     public Posting createPosting(Posting posting){
+
+        for(PostingTag postingTag : posting.getPostingTags()){
+            Tag findTag = tagRepository.findByTagName(postingTag.getTag().getTagName());
+
+            if(findTag != null){
+                postingTag.setTag(findTag);
+            }
+            else{
+                Tag savedTag = tagRepository.save(postingTag.getTag());
+                postingTag.setTag(savedTag);
+            }
+        }
+
         return postingRepository.save(posting);
     }
 

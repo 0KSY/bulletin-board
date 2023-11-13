@@ -1,5 +1,6 @@
 package com.solo.bulletinboard.posting.dto;
 
+import com.solo.bulletinboard.postingTag.dto.PostingTagDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +16,7 @@ public class PostingDto {
         private String title;
         private String content;
         private long memberId;
+        private List<PostingTagDto> postingTagDtos;
     }
 
     @Getter
@@ -36,7 +38,16 @@ public class PostingDto {
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private MemberResponse memberResponse;
+        private List<TagResponse> tagResponses;
         private List<ParentCommentResponse> parentCommentResponses;
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class TagResponse{
+        private long tagId;
+        private String tagName;
     }
 
     @Getter
