@@ -2,6 +2,7 @@ package com.solo.bulletinboard.posting.service;
 
 import com.solo.bulletinboard.exception.BusinessLogicException;
 import com.solo.bulletinboard.exception.ExceptionCode;
+import com.solo.bulletinboard.member.service.MemberService;
 import com.solo.bulletinboard.posting.entity.Posting;
 import com.solo.bulletinboard.posting.repository.PostingRepository;
 import com.solo.bulletinboard.postingTag.entity.PostingTag;
@@ -22,10 +23,12 @@ public class PostingService {
 
     private final PostingRepository postingRepository;
     private final TagRepository tagRepository;
+    private final MemberService memberService;
 
-    public PostingService(PostingRepository postingRepository, TagRepository tagRepository) {
+    public PostingService(PostingRepository postingRepository, TagRepository tagRepository, MemberService memberService) {
         this.postingRepository = postingRepository;
         this.tagRepository = tagRepository;
+        this.memberService = memberService;
     }
 
     public Posting findVerifiedPosting(long postingId){
@@ -54,8 +57,10 @@ public class PostingService {
         return postingRepository.save(posting);
     }
 
-    public Posting updatePosting(Posting posting){
+    public Posting updatePosting(Posting posting, String accessToken){
         Posting findPosting = findVerifiedPosting(posting.getPostingId());
+
+        memberService.verifyMemberId(accessToken, findPosting.getMember().getMemberId());
 
         Optional.ofNullable(posting.getTitle())
                 .ifPresent(title -> findPosting.setTitle(title));
@@ -78,9 +83,11 @@ public class PostingService {
                 PageRequest.of(page, size, Sort.by("postingId").descending()));
     }
 
-    public void deletePosting(long postingId){
+    public void deletePosting(long postingId, String accessToken){
 
         Posting findPosting = findVerifiedPosting(postingId);
+
+        memberService.verifyMemberId(accessToken, findPosting.getMember().getMemberId());
 
         postingRepository.delete(findPosting);
     }

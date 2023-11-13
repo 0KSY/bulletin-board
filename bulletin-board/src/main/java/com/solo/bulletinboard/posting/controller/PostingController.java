@@ -2,6 +2,7 @@ package com.solo.bulletinboard.posting.controller;
 
 import com.solo.bulletinboard.dto.MultiResponseDto;
 import com.solo.bulletinboard.dto.SingleResponseDto;
+import com.solo.bulletinboard.member.service.MemberService;
 import com.solo.bulletinboard.posting.dto.PostingDto;
 import com.solo.bulletinboard.posting.entity.Posting;
 import com.solo.bulletinboard.posting.mapper.PostingMapper;
@@ -10,6 +11,7 @@ import com.solo.bulletinboard.tag.entity.Tag;
 import com.solo.bulletinboard.tag.service.TagService;
 import com.solo.bulletinboard.utils.UriCreator;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -26,17 +28,22 @@ import java.util.List;
 public class PostingController {
 
     private final PostingService postingService;
+    private final MemberService memberService;
     private final PostingMapper mapper;
-
     private static final String POSTING_DEFAULT_URL = "/postings";
 
-    public PostingController(PostingService postingService, PostingMapper mapper) {
+    public PostingController(PostingService postingService, MemberService memberService, PostingMapper mapper) {
         this.postingService = postingService;
+        this.memberService = memberService;
         this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity postPosting(@RequestBody @Valid PostingDto.Post postingPostDto){
+    public ResponseEntity postPosting(@RequestBody @Valid PostingDto.Post postingPostDto,
+                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+
+        long findMemberId = memberService.findMemberId(accessToken);
+        postingPostDto.setMemberId(findMemberId);
         Posting posting = postingService.createPosting(mapper.postingPostDtoToPosting(postingPostDto));
         URI location = UriCreator.createUri(POSTING_DEFAULT_URL, posting.getPostingId());
 
@@ -45,9 +52,11 @@ public class PostingController {
 
     @PatchMapping("/{posting-id}")
     public ResponseEntity patchPosting(@RequestBody @Valid  PostingDto.Patch postingPatchDto,
-                                       @PathVariable("posting-id") @Positive long postingId){
+                                       @PathVariable("posting-id") @Positive long postingId,
+                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+
         postingPatchDto.setPostingId(postingId);
-        Posting posting = postingService.updatePosting(mapper.postingPatchDtoToPosting(postingPatchDto));
+        Posting posting = postingService.updatePosting(mapper.postingPatchDtoToPosting(postingPatchDto), accessToken);
 
         return new ResponseEntity(new SingleResponseDto<>(mapper.postingToPostingResponseDto(posting)), HttpStatus.OK);
     }
@@ -70,8 +79,9 @@ public class PostingController {
     }
 
     @DeleteMapping("/{posting-id}")
-    public ResponseEntity deletePosting(@PathVariable("posting-id") @Positive long postingId){
-        postingService.deletePosting(postingId);
+    public ResponseEntity deletePosting(@PathVariable("posting-id") @Positive long postingId,
+                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String accessToken){
+        postingService.deletePosting(postingId, accessToken);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }

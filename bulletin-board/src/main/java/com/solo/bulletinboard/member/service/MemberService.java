@@ -1,5 +1,6 @@
 package com.solo.bulletinboard.member.service;
 
+import com.solo.bulletinboard.auth.jwt.JwtTokenizer;
 import com.solo.bulletinboard.auth.utils.CustomAuthorityUtils;
 import com.solo.bulletinboard.exception.BusinessLogicException;
 import com.solo.bulletinboard.exception.ExceptionCode;
@@ -22,11 +23,16 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final JwtTokenizer jwtTokenizer;
 
-    public MemberService(MemberRepository memberRepository, PasswordEncoder passwordEncoder, CustomAuthorityUtils customAuthorityUtils) {
+    public MemberService(MemberRepository memberRepository,
+                         PasswordEncoder passwordEncoder,
+                         CustomAuthorityUtils customAuthorityUtils,
+                         JwtTokenizer jwtTokenizer) {
         this.memberRepository = memberRepository;
         this.passwordEncoder = passwordEncoder;
         this.customAuthorityUtils = customAuthorityUtils;
+        this.jwtTokenizer = jwtTokenizer;
     }
 
     // 회원가입 -> 이메일 중복 체크
@@ -51,6 +57,24 @@ public class MemberService {
         return findMember;
     }
 
+    public long findMemberId(String accessToken){
+        String jws = accessToken.replace("Bearer ", "");
+        String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
+
+        long findMemberId = jwtTokenizer.getMemberId(jws, base64EncodedSecretKey);
+
+        return findMemberId;
+
+    }
+
+    public void verifyMemberId(String accessToken, long memberId){
+        long findMemberId = findMemberId(accessToken);
+
+        if(findMemberId != memberId){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_ID_NOT_MATCHED);
+        }
+    }
+
 
     public Member createMember(Member member){
         verifyExistsEmail(member.getEmail());
@@ -64,8 +88,11 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Member updateMember(Member member){
+    public Member updateMember(Member member, String accessToken){
+
         Member findMember = findVerifiedMember(member.getMemberId());
+
+        verifyMemberId(accessToken, member.getMemberId());
 
         Optional.ofNullable(member.getNickname())
                 .ifPresent(nickName -> findMember.setNickname(nickName));
@@ -76,9 +103,13 @@ public class MemberService {
 
     }
 
-    public Member findMember(long memberId){
+    public Member findMember(long memberId, String accessToken){
 
-        return findVerifiedMember(memberId);
+        Member findMember = findVerifiedMember(memberId);
+
+        verifyMemberId(accessToken, findMember.getMemberId());
+
+        return findMember;
 
     }
 
@@ -87,8 +118,10 @@ public class MemberService {
                 PageRequest.of(page, size, Sort.by("memberId").descending()));
     }
 
-    public void deleteMember(long memberId, String password){
+    public void deleteMember(long memberId, String password, String accessToken){
         Member findMember = findVerifiedMember(memberId);
+
+        verifyMemberId(accessToken, findMember.getMemberId());
 
         if(!passwordEncoder.matches(password, findMember.getPassword())){
             throw new BusinessLogicException(ExceptionCode.MEMBER_PASSWORD_NOT_MATCHED);
