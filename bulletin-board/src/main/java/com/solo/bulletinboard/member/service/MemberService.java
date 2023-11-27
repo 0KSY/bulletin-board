@@ -35,17 +35,21 @@ public class MemberService {
         this.jwtTokenizer = jwtTokenizer;
     }
 
-    // 회원가입 -> 이메일 중복 체크
-    // 회원 수정 및 조회 -> 존재하는 회원인지 체크
-
 
     private void verifyExistsEmail(String email){
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Optional<Member> optionalMember = memberRepository.findByEmailAndSignupType(email, Member.SignupType.SERVER);
 
         if(optionalMember.isPresent()){
             throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
         }
+    }
 
+    private void verifyExistsNickname(String nickname){
+        Optional<Member> optionalMember = memberRepository.findByNickname(nickname);
+
+        if(optionalMember.isPresent()){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NICKNAME_EXISTS);
+        }
     }
 
     private Member findVerifiedMember(long memberId){
@@ -78,6 +82,7 @@ public class MemberService {
 
     public Member createMember(Member member){
         verifyExistsEmail(member.getEmail());
+        verifyExistsNickname(member.getNickname());
 
         String encryptedPassword = passwordEncoder.encode(member.getPassword());
         member.setPassword(encryptedPassword);

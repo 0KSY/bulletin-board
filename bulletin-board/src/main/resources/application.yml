@@ -30,7 +30,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create #none -> ??? ????
+      ddl-auto: create
     show-sql: true
     properties:
       hibernate:
@@ -39,17 +39,16 @@ spring:
     init:
       data-locations: classpath*:db/h2/data.sql
 
-#  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            clientId: ${G_CLIENT_ID}
-#            clientSecret: ${G_CLIENT_SECRET}
-#            redirect-uri: https://healthier31.store/login/oauth2/code/google
-#            scope:
-#              - email
-#              - profile
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: ${G_CLIENT_ID}
+            clientSecret: ${G_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
 
 logging:
   level:

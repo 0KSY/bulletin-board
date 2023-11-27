@@ -18,13 +18,13 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+//    @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nickname;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -35,6 +35,9 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus = MemberStatus.MEMBER_ACTIVE;
+
+    @Enumerated(EnumType.STRING)
+    private SignupType signupType = SignupType.SERVER;
 
     public enum MemberStatus{
         MEMBER_ACTIVE("활동중"),
@@ -47,6 +50,11 @@ public class Member {
         MemberStatus(String status) {
             this.status = status;
         }
+    }
+
+    public enum SignupType{
+        SERVER,
+        GOOGLE_OAUTH2;
     }
 
 }

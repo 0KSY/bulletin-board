@@ -2,12 +2,10 @@ package com.solo.bulletinboard.auth.config;
 
 import com.solo.bulletinboard.auth.filter.JwtAuthenticationFilter;
 import com.solo.bulletinboard.auth.filter.JwtVerificationFilter;
-import com.solo.bulletinboard.auth.handler.CustomAccessDeniedHandler;
-import com.solo.bulletinboard.auth.handler.CustomAuthenticationEntryPoint;
-import com.solo.bulletinboard.auth.handler.CustomAuthenticationFailureHandler;
-import com.solo.bulletinboard.auth.handler.CustomAuthenticationSuccessHandler;
+import com.solo.bulletinboard.auth.handler.*;
 import com.solo.bulletinboard.auth.jwt.JwtTokenizer;
 import com.solo.bulletinboard.auth.utils.CustomAuthorityUtils;
+import com.solo.bulletinboard.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,11 +28,16 @@ public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final MemberRepository memberRepository;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer,
+                                 CustomAuthorityUtils customAuthorityUtils,
+                                 MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
+        this.memberRepository = memberRepository;
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
@@ -56,7 +59,9 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
                         .anyRequest().permitAll()
-                );
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(new OAuth2LoginSuccessHandler(jwtTokenizer, customAuthorityUtils, memberRepository)));
 
         return http.build();
 
