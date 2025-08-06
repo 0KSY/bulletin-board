@@ -34,9 +34,8 @@ public class PostingDto {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-
         private MemberInfo memberInfo;
-        private List<CommentResponse> commentResponses;
+        private List<ParentComment> parentComments;
     }
 
     @Getter
@@ -48,15 +47,30 @@ public class PostingDto {
         private String nickname;
     }
 
+
     @Getter
     @Setter
     @Builder
-    public static class CommentResponse{
+    public static class ParentComment{
         private long commentId;
-        private long postingId;
+        private String content;
+        private LocalDateTime createAt;
+        private LocalDateTime modifiedAt;
+        private MemberInfo memberInfo;
+        private List<ChildComment> childComments;
+
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class ChildComment{
+        private long commentId;
+        private long parentId;
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private MemberInfo memberInfo;
+
     }
 }

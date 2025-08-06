@@ -44,23 +44,37 @@ public interface PostingMapper {
 
         response.setMemberInfo(memberInfo);
 
-        List<PostingDto.CommentResponse> commentResponses
+        List<PostingDto.ParentComment> parentComments
                 = posting.getComments().stream()
-                        .map(comment -> PostingDto.CommentResponse.builder()
-                                .commentId(comment.getCommentId())
-                                .postingId(comment.getPosting().getPostingId())
-                                .content(comment.getContent())
-                                .createdAt(comment.getCreatedAt())
-                                .modifiedAt(comment.getModifiedAt())
-                                .memberInfo(PostingDto.MemberInfo.builder()
-                                        .memberId(comment.getMember().getMemberId())
-                                        .email(comment.getMember().getEmail())
-                                        .nickname(comment.getMember().getNickname())
-                                        .build())
-                                .build()
-                        ).collect(Collectors.toList());
+                .filter(comment -> comment.getParent() == null)
+                .map(comment -> PostingDto.ParentComment.builder()
+                        .commentId(comment.getCommentId())
+                        .content(comment.getContent())
+                        .createAt(comment.getCreatedAt())
+                        .modifiedAt(comment.getModifiedAt())
+                        .memberInfo(PostingDto.MemberInfo.builder()
+                                .memberId(comment.getMember().getMemberId())
+                                .email(comment.getMember().getEmail())
+                                .nickname(comment.getMember().getNickname())
+                                .build())
+                        .childComments(comment.getChildren().stream()
+                                .map(childComment -> PostingDto.ChildComment.builder()
+                                        .commentId(childComment.getCommentId())
+                                        .parentId(childComment.getParent().getCommentId())
+                                        .content(childComment.getContent())
+                                        .createdAt(childComment.getCreatedAt())
+                                        .modifiedAt(childComment.getModifiedAt())
+                                        .memberInfo(PostingDto.MemberInfo.builder()
+                                                .memberId(childComment.getMember().getMemberId())
+                                                .email(childComment.getMember().getEmail())
+                                                .nickname(childComment.getMember().getNickname())
+                                                .build())
+                                        .build()
+                                ).collect(Collectors.toList())
+                        ).build()
+                ).collect(Collectors.toList());
 
-        response.setCommentResponses(commentResponses);
+        response.setParentComments(parentComments);
 
         return response;
 
