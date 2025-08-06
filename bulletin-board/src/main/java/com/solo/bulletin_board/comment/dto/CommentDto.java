@@ -19,6 +19,8 @@ public class CommentDto {
         private long memberId;
         @Positive
         private long postingId;
+
+        private long parentId;
     }
 
     @Getter
