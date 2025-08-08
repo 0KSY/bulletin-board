@@ -141,4 +141,24 @@ public interface PostingMapper {
 
     List<PostingDto.Response> postingsToPostingResponseDtos(List<Posting> postings);
 
+    default PostingDto.PostingTagResponse postingToPostingTagResponseDto(Posting posting){
+
+        PostingDto.PostingTagResponse response = PostingDto.PostingTagResponse.builder()
+                .postingId(posting.getPostingId())
+                .title(posting.getTitle())
+                .createdAt(posting.getCreatedAt())
+                .modifiedAt(posting.getModifiedAt())
+                .memberInfo(PostingDto.MemberInfo.builder()
+                        .memberId(posting.getMember().getMemberId())
+                        .email(posting.getMember().getEmail())
+                        .nickname(posting.getMember().getNickname())
+                        .build()
+                ).build();
+
+        return response;
+
+    }
+
+    List<PostingDto.PostingTagResponse> postingsToPostingTagResponseDtos(List<Posting> postings);
+
 }

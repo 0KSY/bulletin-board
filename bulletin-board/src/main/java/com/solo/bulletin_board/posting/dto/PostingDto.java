@@ -87,5 +87,19 @@ public class PostingDto {
 
     }
 
+    @Getter
+    @Setter
+    @Builder
+    public static class PostingTagResponse{
+        private long postingId;
+        private String title;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private MemberInfo memberInfo;
+
+    }
+
+
+
 
 }

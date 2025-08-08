@@ -117,6 +117,22 @@ public class PostingService {
 
     }
 
+    public Page<Posting> findPostingsByTagName(String tagName, int page, int size){
+
+        Tag findTag = tagRepository.findByTagName(tagName).orElseThrow(
+                () -> new BusinessLogicException(ExceptionCode.TAG_NOT_FOUND));
+
+        List<Long> postingIds = findTag.getPostingTags().stream()
+                .map(postingTag -> postingTag.getPosting().getPostingId()).collect(Collectors.toList());
+
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("postingId").descending());
+
+        Page<Posting> pagePostings = postingRepository.findByPostingIdIn(postingIds, pageRequest);
+
+        return pagePostings;
+
+    }
+
     public void deletePosting(long postingId){
         Posting findPosting = findVerifiedPosting(postingId);
 
