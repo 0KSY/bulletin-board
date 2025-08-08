@@ -30,7 +30,7 @@ public class TagController {
     }
 
     @GetMapping
-    public ResponseEntity findTags(@RequestParam @Positive int page,
+    public ResponseEntity getTags(@RequestParam @Positive int page,
                                    @RequestParam @Positive int size){
         Page<Tag> pageTags = tagService.findTags(page-1, size);
         List<Tag> tags = pageTags.getContent();
@@ -38,5 +38,4 @@ public class TagController {
         return new ResponseEntity(new MultiResponseDto<>(mapper.tagsToTagResponseDtos(tags), pageTags), HttpStatus.OK);
 
     }
-
 }

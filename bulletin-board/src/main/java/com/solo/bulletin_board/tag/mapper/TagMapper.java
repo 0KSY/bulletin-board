@@ -12,4 +12,5 @@ public interface TagMapper {
     TagDto.Response tagToTagResponseDto(Tag tag);
 
     List<TagDto.Response> tagsToTagResponseDtos(List<Tag> tags);
+
 }

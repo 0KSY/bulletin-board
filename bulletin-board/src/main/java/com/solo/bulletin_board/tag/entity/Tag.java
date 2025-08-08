@@ -1,10 +1,13 @@
 package com.solo.bulletin_board.tag.entity;
 
+import com.solo.bulletin_board.postingTag.entity.PostingTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,4 +21,7 @@ public class Tag {
 
     @Column(nullable = false, unique = true)
     private String tagName;
+
+    @OneToMany(mappedBy = "tag")
+    private List<PostingTag> postingTags = new ArrayList<>();
 }
