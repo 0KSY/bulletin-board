@@ -29,6 +29,9 @@ public class Posting extends Auditable {
     @Column(nullable = false)
     private String content;
 
+    @Column(nullable = false)
+    private int viewCount;
+
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
     private Member member;

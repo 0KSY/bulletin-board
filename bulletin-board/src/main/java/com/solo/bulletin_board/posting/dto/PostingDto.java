@@ -35,6 +35,7 @@ public class PostingDto {
         private long postingId;
         private String title;
         private String content;
+        private int viewCount;
         private int postingLikeCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
@@ -94,6 +95,8 @@ public class PostingDto {
     public static class PostingTagResponse{
         private long postingId;
         private String title;
+        private int viewCount;
+        private int postingLikeCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private MemberInfo memberInfo;
