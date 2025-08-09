@@ -40,6 +40,7 @@ public class PostingController {
         URI location = UriCreator.createUri(POSTING_DEFAULT_URL, posting.getPostingId());
 
         return ResponseEntity.created(location).build();
+        
     }
 
     @PatchMapping("/{posting-id}")
