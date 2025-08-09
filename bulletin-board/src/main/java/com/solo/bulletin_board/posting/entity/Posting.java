@@ -3,6 +3,7 @@ package com.solo.bulletin_board.posting.entity;
 import com.solo.bulletin_board.audit.Auditable;
 import com.solo.bulletin_board.comment.entity.Comment;
 import com.solo.bulletin_board.member.entity.Member;
+import com.solo.bulletin_board.postingLike.entity.PostingLike;
 import com.solo.bulletin_board.postingTag.entity.PostingTag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,7 @@ public class Posting extends Auditable {
 
     @OneToMany(mappedBy = "posting", cascade = CascadeType.ALL)
     private List<PostingTag> postingTags = new ArrayList<>();
+
+    @OneToMany(mappedBy = "posting", cascade = CascadeType.REMOVE)
+    private List<PostingLike> postingLikes = new ArrayList<>();
 }
