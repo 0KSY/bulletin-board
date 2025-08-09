@@ -81,6 +81,7 @@ public interface PostingMapper {
                 .postingId(posting.getPostingId())
                 .title(posting.getTitle())
                 .content(posting.getContent())
+                .postingLikeCount(posting.getPostingLikes().size())
                 .createdAt(posting.getCreatedAt())
                 .modifiedAt(posting.getModifiedAt())
                 .build();
