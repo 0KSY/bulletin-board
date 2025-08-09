@@ -115,8 +115,10 @@ public class PostingService {
 
     public Posting findPosting(long postingId){
         Posting findPosting = findVerifiedPosting(postingId);
+        findPosting.setViewCount(findPosting.getViewCount() + 1);
 
-        return findPosting;
+        return postingRepository.save(findPosting);
+
     }
 
     public Page<Posting> findPostings(int page, int size){

@@ -21,6 +21,7 @@ public interface PostingMapper {
         Posting posting = new Posting();
         posting.setTitle(postingPostDto.getTitle());
         posting.setContent(postingPostDto.getContent());
+        posting.setViewCount(0);
         posting.setMember(member);
 
         if(postingPostDto.getPostingTagDtos() != null){
@@ -81,6 +82,7 @@ public interface PostingMapper {
                 .postingId(posting.getPostingId())
                 .title(posting.getTitle())
                 .content(posting.getContent())
+                .viewCount(posting.getViewCount())
                 .postingLikeCount(posting.getPostingLikes().size())
                 .createdAt(posting.getCreatedAt())
                 .modifiedAt(posting.getModifiedAt())
@@ -147,6 +149,8 @@ public interface PostingMapper {
         PostingDto.PostingTagResponse response = PostingDto.PostingTagResponse.builder()
                 .postingId(posting.getPostingId())
                 .title(posting.getTitle())
+                .viewCount(posting.getViewCount())
+                .postingLikeCount(posting.getPostingLikes().size())
                 .createdAt(posting.getCreatedAt())
                 .modifiedAt(posting.getModifiedAt())
                 .memberInfo(PostingDto.MemberInfo.builder()
