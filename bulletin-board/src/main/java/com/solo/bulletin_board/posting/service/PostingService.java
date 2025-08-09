@@ -2,6 +2,8 @@ package com.solo.bulletin_board.posting.service;
 
 import com.solo.bulletin_board.exception.BusinessLogicException;
 import com.solo.bulletin_board.exception.ExceptionCode;
+import com.solo.bulletin_board.member.entity.Member;
+import com.solo.bulletin_board.member.service.MemberService;
 import com.solo.bulletin_board.posting.entity.Posting;
 import com.solo.bulletin_board.posting.repository.PostingRepository;
 import com.solo.bulletin_board.postingTag.entity.PostingTag;
@@ -25,13 +27,16 @@ public class PostingService {
     private final PostingRepository postingRepository;
     private final TagRepository tagRepository;
     private final PostingTagRepository postingTagRepository;
+    private final MemberService memberService;
 
     public PostingService(PostingRepository postingRepository,
                           TagRepository tagRepository,
-                          PostingTagRepository postingTagRepository) {
+                          PostingTagRepository postingTagRepository,
+                          MemberService memberService) {
         this.postingRepository = postingRepository;
         this.tagRepository = tagRepository;
         this.postingTagRepository = postingTagRepository;
+        this.memberService = memberService;
     }
 
     Posting findVerifiedPosting(long postingId){
@@ -63,6 +68,10 @@ public class PostingService {
             }
 
         }
+
+        Member findMember = memberService.findMember(posting.getMember().getMemberId());
+
+        posting.setMember(findMember);
 
         return postingRepository.save(posting);
     }

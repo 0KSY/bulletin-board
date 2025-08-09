@@ -39,7 +39,8 @@ public class PostingController {
 
         URI location = UriCreator.createUri(POSTING_DEFAULT_URL, posting.getPostingId());
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location)
+                .body(new SingleResponseDto<>(mapper.postingToPostingResponseDto(posting)));
         
     }
 
