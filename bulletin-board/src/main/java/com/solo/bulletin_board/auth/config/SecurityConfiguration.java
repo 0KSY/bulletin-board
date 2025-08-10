@@ -55,7 +55,7 @@ public class SecurityConfiguration {
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
                         .antMatchers(HttpMethod.POST, "/members").permitAll()
-                        .antMatchers("/members/**").hasRole("USER")
+                        .antMatchers("/members").hasRole("USER")
                         .antMatchers(HttpMethod.GET, "/postings", "/postings/tagNames").permitAll()
                         .antMatchers("/postings/**").hasRole("USER")
                         .antMatchers("/comments/**").hasRole("USER")
