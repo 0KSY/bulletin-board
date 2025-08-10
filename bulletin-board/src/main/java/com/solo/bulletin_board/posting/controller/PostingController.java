@@ -72,7 +72,7 @@ public class PostingController {
         List<Posting> postings = pagePostings.getContent();
 
         return new ResponseEntity(
-                new MultiResponseDto<>(mapper.postingsToPostingResponseDtos(postings), pagePostings), HttpStatus.OK);
+                new MultiResponseDto<>(mapper.postingsToAllPostingResponseDtos(postings), pagePostings), HttpStatus.OK);
     }
 
     @GetMapping("/tagNames")
