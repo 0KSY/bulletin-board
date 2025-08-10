@@ -96,9 +96,13 @@ public class MemberService {
         return findMember;
     }
 
-    public void deleteMember(long memberId){
+    public void deleteMember(long memberId, String password){
 
         Member findMember = findVerifiedMember(memberId);
+
+        if(!passwordEncoder.matches(password, findMember.getPassword())){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_PASSWORD_NOT_MATCHED);
+        }
 
         memberRepository.delete(findMember);
     }
