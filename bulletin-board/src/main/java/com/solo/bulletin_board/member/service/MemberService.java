@@ -1,12 +1,15 @@
 package com.solo.bulletin_board.member.service;
 
+import com.solo.bulletin_board.auth.utils.CustomAuthorityUtils;
 import com.solo.bulletin_board.exception.BusinessLogicException;
 import com.solo.bulletin_board.exception.ExceptionCode;
 import com.solo.bulletin_board.member.entity.Member;
 import com.solo.bulletin_board.member.repository.MemberRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,9 +17,15 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final CustomAuthorityUtils customAuthorityUtils;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository,
+                         CustomAuthorityUtils customAuthorityUtils,
+                         PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.customAuthorityUtils = customAuthorityUtils;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public void verifyExistsEmail(String email){
@@ -51,6 +60,12 @@ public class MemberService {
 
         verifyExistsEmail(member.getEmail());
         verifyExistsNickname(member.getNickname());
+
+        String encryptedPassword = passwordEncoder.encode(member.getPassword());
+        member.setPassword(encryptedPassword);
+
+        List<String> roles = customAuthorityUtils.createRoles(member.getEmail());
+        member.setRoles(roles);
 
         return memberRepository.save(member);
     }
