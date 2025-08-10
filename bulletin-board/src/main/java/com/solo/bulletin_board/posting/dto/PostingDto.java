@@ -47,6 +47,20 @@ public class PostingDto {
     @Getter
     @Setter
     @Builder
+    public static class AllPostingResponse{
+        private long postingId;
+        private String title;
+        private int viewCount;
+        private int postingLikeCount;
+        private int commentCount;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private MemberInfo memberInfo;
+    }
+
+    @Getter
+    @Setter
+    @Builder
     public static class MemberInfo{
         private long memberId;
         private String email;
@@ -97,6 +111,7 @@ public class PostingDto {
         private String title;
         private int viewCount;
         private int postingLikeCount;
+        private int commentCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
         private MemberInfo memberInfo;

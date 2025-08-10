@@ -142,7 +142,39 @@ public interface PostingMapper {
 
     }
 
-    List<PostingDto.Response> postingsToPostingResponseDtos(List<Posting> postings);
+    default PostingDto.AllPostingResponse postingToAllPostingResponseDto(Posting posting){
+
+        PostingDto.AllPostingResponse response = PostingDto.AllPostingResponse.builder()
+                .postingId(posting.getPostingId())
+                .title(posting.getTitle())
+                .viewCount(posting.getViewCount())
+                .postingLikeCount(posting.getPostingLikes().size())
+                .createdAt(posting.getCreatedAt())
+                .modifiedAt(posting.getModifiedAt())
+                .memberInfo(PostingDto.MemberInfo.builder()
+                        .memberId(posting.getMember().getMemberId())
+                        .email(posting.getMember().getEmail())
+                        .nickname(posting.getMember().getNickname())
+                        .build()
+                ).build();
+
+        int parentCommentCount = (int) posting.getComments().stream()
+                .filter(comment -> comment.getParent() == null)
+                .count();
+
+        int childCommentCount = posting.getComments().stream()
+                .filter(comment ->  comment.getParent() == null)
+                .mapToInt(comment -> comment.getChildren().size())
+                .sum();
+
+        response.setCommentCount(parentCommentCount + childCommentCount);
+
+        return response;
+
+    }
+
+    List<PostingDto.AllPostingResponse> postingsToAllPostingResponseDtos(List<Posting> postings);
+
 
     default PostingDto.PostingTagResponse postingToPostingTagResponseDto(Posting posting){
 
@@ -159,6 +191,17 @@ public interface PostingMapper {
                         .nickname(posting.getMember().getNickname())
                         .build()
                 ).build();
+
+        int parentCommentCount = (int) posting.getComments().stream()
+                .filter(comment -> comment.getParent() == null)
+                .count();
+
+        int childCommentCount = posting.getComments().stream()
+                .filter(comment -> comment.getParent() == null)
+                .mapToInt(comment -> comment.getChildren().size())
+                .sum();
+
+        response.setCommentCount(parentCommentCount + childCommentCount);
 
         return response;
 
