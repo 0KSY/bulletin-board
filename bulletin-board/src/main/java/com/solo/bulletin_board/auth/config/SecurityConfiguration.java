@@ -2,12 +2,10 @@ package com.solo.bulletin_board.auth.config;
 
 import com.solo.bulletin_board.auth.filter.JwtAuthenticationFilter;
 import com.solo.bulletin_board.auth.filter.JwtVerificationFilter;
-import com.solo.bulletin_board.auth.handler.CustomAccessDeniedHandler;
-import com.solo.bulletin_board.auth.handler.CustomAuthenticationEntryPoint;
-import com.solo.bulletin_board.auth.handler.CustomAuthenticationFailureHandler;
-import com.solo.bulletin_board.auth.handler.CustomAuthenticationSuccessHandler;
+import com.solo.bulletin_board.auth.handler.*;
 import com.solo.bulletin_board.auth.jwt.JwtTokenizer;
 import com.solo.bulletin_board.auth.utils.CustomAuthorityUtils;
+import com.solo.bulletin_board.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -30,10 +28,14 @@ public class SecurityConfiguration {
 
     private final JwtTokenizer jwtTokenizer;
     private final CustomAuthorityUtils customAuthorityUtils;
+    private final MemberRepository memberRepository;
 
-    public SecurityConfiguration(JwtTokenizer jwtTokenizer, CustomAuthorityUtils customAuthorityUtils) {
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer,
+                                 CustomAuthorityUtils customAuthorityUtils,
+                                 MemberRepository memberRepository) {
         this.jwtTokenizer = jwtTokenizer;
         this.customAuthorityUtils = customAuthorityUtils;
+        this.memberRepository = memberRepository;
     }
 
     @Bean
@@ -61,6 +63,9 @@ public class SecurityConfiguration {
                         .antMatchers("/comments/**").hasRole("USER")
                         .antMatchers("/tags").permitAll()
                         .antMatchers("/postingLikes").hasRole("USER")
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .successHandler(new OAuth2LoginSuccessHandler(jwtTokenizer, customAuthorityUtils, memberRepository))
                 );
 
         return http.build();
