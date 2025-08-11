@@ -9,8 +9,6 @@ public class PostingLikeDto {
     @Getter
     @Setter
     public static class Post{
-        
-        private long memberId;
         private long postingId;
     }
 
