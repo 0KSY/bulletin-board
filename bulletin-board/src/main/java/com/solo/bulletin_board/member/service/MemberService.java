@@ -1,5 +1,6 @@
 package com.solo.bulletin_board.member.service;
 
+import com.solo.bulletin_board.auth.userDetailsService.CustomUserDetails;
 import com.solo.bulletin_board.auth.utils.CustomAuthorityUtils;
 import com.solo.bulletin_board.exception.BusinessLogicException;
 import com.solo.bulletin_board.exception.ExceptionCode;
@@ -51,6 +52,14 @@ public class MemberService {
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND));
 
         return findMember;
+
+    }
+
+    public void checkMemberId(long memberId, CustomUserDetails customUserDetails){
+
+        if(memberId != customUserDetails.getMemberId()){
+            throw new BusinessLogicException(ExceptionCode.MEMBER_NOT_MATCHED);
+        }
 
     }
 

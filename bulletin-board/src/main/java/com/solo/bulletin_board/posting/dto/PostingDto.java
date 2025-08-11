@@ -15,7 +15,6 @@ public class PostingDto {
     public static class Post{
         private String title;
         private String content;
-        private long memberId;
         private List<PostingTagDto> postingTagDtos;
     }
 

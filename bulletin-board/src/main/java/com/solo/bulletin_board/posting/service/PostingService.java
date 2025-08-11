@@ -1,5 +1,6 @@
 package com.solo.bulletin_board.posting.service;
 
+import com.solo.bulletin_board.auth.userDetailsService.CustomUserDetails;
 import com.solo.bulletin_board.exception.BusinessLogicException;
 import com.solo.bulletin_board.exception.ExceptionCode;
 import com.solo.bulletin_board.member.entity.Member;
@@ -49,7 +50,11 @@ public class PostingService {
 
     }
 
-    public Posting createPosting(Posting posting){
+    public Posting createPosting(Posting posting, CustomUserDetails customUserDetails){
+
+        Member findMember = memberService.findVerifiedMember(customUserDetails.getMemberId());
+
+        posting.setMember(findMember);
 
         List<PostingTag> postingTags = posting.getPostingTags();
 
@@ -69,16 +74,14 @@ public class PostingService {
 
         }
 
-        Member findMember = memberService.findMember(posting.getMember().getMemberId());
-
-        posting.setMember(findMember);
-
         return postingRepository.save(posting);
     }
 
-    public Posting updatePosting(Posting posting){
+    public Posting updatePosting(Posting posting, CustomUserDetails customUserDetails){
 
         Posting findPosting = findVerifiedPosting(posting.getPostingId());
+
+        memberService.checkMemberId(findPosting.getMember().getMemberId(), customUserDetails);
 
         Optional.ofNullable(posting.getTitle())
                 .ifPresent(title -> findPosting.setTitle(title));
@@ -144,8 +147,11 @@ public class PostingService {
 
     }
 
-    public void deletePosting(long postingId){
+    public void deletePosting(long postingId, CustomUserDetails customUserDetails){
+
         Posting findPosting = findVerifiedPosting(postingId);
+
+        memberService.checkMemberId(findPosting.getMember().getMemberId(), customUserDetails);
 
         postingRepository.delete(findPosting);
     }
