@@ -15,14 +15,10 @@ public interface PostingMapper {
 
     default Posting postingPostDtoToPosting(PostingDto.Post postingPostDto){
 
-        Member member = new Member();
-        member.setMemberId(postingPostDto.getMemberId());
-
         Posting posting = new Posting();
         posting.setTitle(postingPostDto.getTitle());
         posting.setContent(postingPostDto.getContent());
         posting.setViewCount(0);
-        posting.setMember(member);
 
         if(postingPostDto.getPostingTagDtos() != null){
 
@@ -53,7 +49,7 @@ public interface PostingMapper {
             posting.setTitle(postingPatchDto.getTitle());
         }
         if(postingPatchDto.getContent() != null){
-            posting.setContent(postingPatchDto.getTitle());
+            posting.setContent(postingPatchDto.getContent());
         }
         if(postingPatchDto.getPostingTagDtos() != null){
 
