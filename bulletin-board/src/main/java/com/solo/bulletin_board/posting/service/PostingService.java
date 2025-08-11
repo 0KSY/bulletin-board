@@ -124,6 +124,7 @@ public class PostingService {
 
     }
 
+
     public Page<Posting> findPostings(int page, int size){
 
         return postingRepository.findAll(
