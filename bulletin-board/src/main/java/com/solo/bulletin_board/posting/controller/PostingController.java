@@ -76,7 +76,7 @@ public class PostingController {
         List<Posting> postings = pagePostings.getContent();
 
         return new ResponseEntity(
-                new MultiResponseDto<>(mapper.postingsToAllPostingResponseDtos(postings), pagePostings), HttpStatus.OK);
+                new MultiResponseDto<>(mapper.postingsToPostingInfoResponseDtos(postings), pagePostings), HttpStatus.OK);
     }
 
     @GetMapping("/tagNames")
@@ -88,7 +88,7 @@ public class PostingController {
         List<Posting> postings = pagePostings.getContent();
 
         return new ResponseEntity(
-                new MultiResponseDto<>(mapper.postingsToPostingTagResponseDtos(postings), pagePostings), HttpStatus.OK);
+                new MultiResponseDto<>(mapper.postingsToPostingInfoResponseDtos(postings), pagePostings), HttpStatus.OK);
 
     }
 

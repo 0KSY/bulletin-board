@@ -1,5 +1,6 @@
 package com.solo.bulletin_board.comment.dto;
 
+import com.solo.bulletin_board.member.dto.MemberDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class CommentDto {
 
@@ -37,15 +39,32 @@ public class CommentDto {
         private String content;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
+        private MemberDto.MemberResponse memberResponse;
+    }
+
+
+    @Getter
+    @Setter
+    @Builder
+    public static class ParentCommentResponse{
+        private long commentId;
+        private String content;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private MemberDto.MemberResponse memberResponse;
+        private List<ChildCommentResponse> childCommentResponses;
     }
 
     @Getter
     @Setter
     @Builder
-    public static class MemberInfo{
-        private long memberId;
-        private String email;
-        private String nickname;
+    public static class ChildCommentResponse{
+        private long commentId;
+        private long parentId;
+        private String content;
+        private LocalDateTime createdAt;
+        private LocalDateTime modifiedAt;
+        private MemberDto.MemberResponse memberResponse;
     }
+
 }

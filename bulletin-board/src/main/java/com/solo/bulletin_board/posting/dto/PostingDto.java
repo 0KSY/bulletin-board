@@ -1,6 +1,9 @@
 package com.solo.bulletin_board.posting.dto;
 
+import com.solo.bulletin_board.comment.dto.CommentDto;
+import com.solo.bulletin_board.member.dto.MemberDto;
 import com.solo.bulletin_board.postingTag.dto.PostingTagDto;
+import com.solo.bulletin_board.tag.dto.TagDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,15 +41,16 @@ public class PostingDto {
         private int postingLikeCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
-        private List<TagResponse> tagResponses;
-        private List<ParentComment> parentComments;
+        private MemberDto.MemberResponse memberResponse;
+        private List<TagDto.TagResponse> tagResponses;
+        private List<CommentDto.ParentCommentResponse> parentCommentResponses;
     }
+
 
     @Getter
     @Setter
     @Builder
-    public static class AllPostingResponse{
+    public static class PostingInfoResponse{
         private long postingId;
         private String title;
         private int viewCount;
@@ -54,70 +58,9 @@ public class PostingDto {
         private int commentCount;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    public static class MemberInfo{
-        private long memberId;
-        private String email;
-        private String nickname;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    public static class TagResponse{
-        private long tagId;
-        private String tagName;
+        private MemberDto.MemberResponse memberResponse;
 
     }
-
-
-    @Getter
-    @Setter
-    @Builder
-    public static class ParentComment{
-        private long commentId;
-        private String content;
-        private LocalDateTime createAt;
-        private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
-        private List<ChildComment> childComments;
-
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    public static class ChildComment{
-        private long commentId;
-        private long parentId;
-        private String content;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
-
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    public static class PostingTagResponse{
-        private long postingId;
-        private String title;
-        private int viewCount;
-        private int postingLikeCount;
-        private int commentCount;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
-        private MemberInfo memberInfo;
-
-    }
-
-
 
 
 }
