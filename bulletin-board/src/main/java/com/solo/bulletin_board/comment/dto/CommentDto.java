@@ -16,8 +16,6 @@ public class CommentDto {
         @NotBlank
         private String content;
         @Positive
-        private long memberId;
-        @Positive
         private long postingId;
 
         private long parentId;
