@@ -2,7 +2,7 @@ package com.solo.bulletin_board.comment.mapper;
 
 import com.solo.bulletin_board.comment.dto.CommentDto;
 import com.solo.bulletin_board.comment.entity.Comment;
-import com.solo.bulletin_board.member.entity.Member;
+import com.solo.bulletin_board.member.dto.MemberDto;
 import com.solo.bulletin_board.posting.entity.Posting;
 import org.mapstruct.Mapper;
 
@@ -38,7 +38,7 @@ public interface CommentMapper {
                 .content(comment.getContent())
                 .createdAt(comment.getCreatedAt())
                 .modifiedAt(comment.getModifiedAt())
-                .memberInfo(CommentDto.MemberInfo.builder()
+                .memberResponse(MemberDto.MemberResponse.builder()
                         .memberId(comment.getMember().getMemberId())
                         .email(comment.getMember().getEmail())
                         .nickname(comment.getMember().getNickname())

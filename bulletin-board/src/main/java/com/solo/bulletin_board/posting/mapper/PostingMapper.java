@@ -1,9 +1,11 @@
 package com.solo.bulletin_board.posting.mapper;
 
-import com.solo.bulletin_board.member.entity.Member;
+import com.solo.bulletin_board.comment.dto.CommentDto;
+import com.solo.bulletin_board.member.dto.MemberDto;
 import com.solo.bulletin_board.posting.dto.PostingDto;
 import com.solo.bulletin_board.posting.entity.Posting;
 import com.solo.bulletin_board.postingTag.entity.PostingTag;
+import com.solo.bulletin_board.tag.dto.TagDto;
 import com.solo.bulletin_board.tag.entity.Tag;
 import org.mapstruct.Mapper;
 
@@ -84,16 +86,16 @@ public interface PostingMapper {
                 .modifiedAt(posting.getModifiedAt())
                 .build();
 
-        PostingDto.MemberInfo memberInfo = PostingDto.MemberInfo.builder()
+        MemberDto.MemberResponse memberResponse = MemberDto.MemberResponse.builder()
                 .memberId(posting.getMember().getMemberId())
                 .email(posting.getMember().getEmail())
                 .nickname(posting.getMember().getNickname())
                 .build();
 
-        response.setMemberInfo(memberInfo);
+        response.setMemberResponse(memberResponse);
 
-        List<PostingDto.TagResponse> tagResponses = posting.getPostingTags().stream()
-                .map(postingTag -> PostingDto.TagResponse.builder()
+        List<TagDto.TagResponse> tagResponses = posting.getPostingTags().stream()
+                .map(postingTag -> TagDto.TagResponse.builder()
                         .tagId(postingTag.getTag().getTagId())
                         .tagName(postingTag.getTag().getTagName())
                         .build()
@@ -102,27 +104,27 @@ public interface PostingMapper {
         response.setTagResponses(tagResponses);
 
 
-        List<PostingDto.ParentComment> parentComments
+        List<CommentDto.ParentCommentResponse> parentCommentResponses
                 = posting.getComments().stream()
                 .filter(comment -> comment.getParent() == null)
-                .map(comment -> PostingDto.ParentComment.builder()
+                .map(comment -> CommentDto.ParentCommentResponse.builder()
                         .commentId(comment.getCommentId())
                         .content(comment.getContent())
-                        .createAt(comment.getCreatedAt())
+                        .createdAt(comment.getCreatedAt())
                         .modifiedAt(comment.getModifiedAt())
-                        .memberInfo(PostingDto.MemberInfo.builder()
+                        .memberResponse(MemberDto.MemberResponse.builder()
                                 .memberId(comment.getMember().getMemberId())
                                 .email(comment.getMember().getEmail())
                                 .nickname(comment.getMember().getNickname())
                                 .build())
-                        .childComments(comment.getChildren().stream()
-                                .map(childComment -> PostingDto.ChildComment.builder()
+                        .childCommentResponses(comment.getChildren().stream()
+                                .map(childComment -> CommentDto.ChildCommentResponse.builder()
                                         .commentId(childComment.getCommentId())
                                         .parentId(childComment.getParent().getCommentId())
                                         .content(childComment.getContent())
                                         .createdAt(childComment.getCreatedAt())
                                         .modifiedAt(childComment.getModifiedAt())
-                                        .memberInfo(PostingDto.MemberInfo.builder()
+                                        .memberResponse(MemberDto.MemberResponse.builder()
                                                 .memberId(childComment.getMember().getMemberId())
                                                 .email(childComment.getMember().getEmail())
                                                 .nickname(childComment.getMember().getNickname())
@@ -132,56 +134,22 @@ public interface PostingMapper {
                         ).build()
                 ).collect(Collectors.toList());
 
-        response.setParentComments(parentComments);
+        response.setParentCommentResponses(parentCommentResponses);
 
         return response;
 
     }
 
-    default PostingDto.AllPostingResponse postingToAllPostingResponseDto(Posting posting){
+    default PostingDto.PostingInfoResponse postingToPostingInfoResponseDto(Posting posting){
 
-        PostingDto.AllPostingResponse response = PostingDto.AllPostingResponse.builder()
+        PostingDto.PostingInfoResponse response = PostingDto.PostingInfoResponse.builder()
                 .postingId(posting.getPostingId())
                 .title(posting.getTitle())
                 .viewCount(posting.getViewCount())
                 .postingLikeCount(posting.getPostingLikes().size())
                 .createdAt(posting.getCreatedAt())
                 .modifiedAt(posting.getModifiedAt())
-                .memberInfo(PostingDto.MemberInfo.builder()
-                        .memberId(posting.getMember().getMemberId())
-                        .email(posting.getMember().getEmail())
-                        .nickname(posting.getMember().getNickname())
-                        .build()
-                ).build();
-
-        int parentCommentCount = (int) posting.getComments().stream()
-                .filter(comment -> comment.getParent() == null)
-                .count();
-
-        int childCommentCount = posting.getComments().stream()
-                .filter(comment ->  comment.getParent() == null)
-                .mapToInt(comment -> comment.getChildren().size())
-                .sum();
-
-        response.setCommentCount(parentCommentCount + childCommentCount);
-
-        return response;
-
-    }
-
-    List<PostingDto.AllPostingResponse> postingsToAllPostingResponseDtos(List<Posting> postings);
-
-
-    default PostingDto.PostingTagResponse postingToPostingTagResponseDto(Posting posting){
-
-        PostingDto.PostingTagResponse response = PostingDto.PostingTagResponse.builder()
-                .postingId(posting.getPostingId())
-                .title(posting.getTitle())
-                .viewCount(posting.getViewCount())
-                .postingLikeCount(posting.getPostingLikes().size())
-                .createdAt(posting.getCreatedAt())
-                .modifiedAt(posting.getModifiedAt())
-                .memberInfo(PostingDto.MemberInfo.builder()
+                .memberResponse(MemberDto.MemberResponse.builder()
                         .memberId(posting.getMember().getMemberId())
                         .email(posting.getMember().getEmail())
                         .nickname(posting.getMember().getNickname())
@@ -203,6 +171,6 @@ public interface PostingMapper {
 
     }
 
-    List<PostingDto.PostingTagResponse> postingsToPostingTagResponseDtos(List<Posting> postings);
+    List<PostingDto.PostingInfoResponse> postingsToPostingInfoResponseDtos(List<Posting> postings);
 
 }

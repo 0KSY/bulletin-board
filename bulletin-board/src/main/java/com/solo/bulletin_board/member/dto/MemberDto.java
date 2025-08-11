@@ -51,4 +51,15 @@ public class MemberDto {
         private LocalDateTime modifiedAt;
 
     }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class MemberResponse{
+        private long memberId;
+        private String email;
+        private String nickname;
+    }
+
+
 }
