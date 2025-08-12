@@ -116,9 +116,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String accessToken = jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
+        return jwtTokenizer.generateAccessToken(claims, subject, expiration, base64EncodedSecretKey);
 
-        return accessToken;
     }
 
     private String delegateRefreshToken(Member member){
@@ -130,9 +129,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         Date expiration = jwtTokenizer.getTokenExpiration(jwtTokenizer.getRefreshTokenExpirationMinutes());
         String base64EncodedSecretKey = jwtTokenizer.encodeBase64SecretKey(jwtTokenizer.getSecretKey());
 
-        String refreshToken = jwtTokenizer.generateRefreshToken(claims, subject, expiration, base64EncodedSecretKey);
+        return jwtTokenizer.generateRefreshToken(claims, subject, expiration, base64EncodedSecretKey);
 
-        return refreshToken;
     }
 
     private URI createURI(String accessToken, String refreshToken, Member member){
