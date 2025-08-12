@@ -56,13 +56,16 @@ public class SecurityConfiguration {
                 .apply(new CustomFilterConfigurer())
                 .and()
                 .authorizeHttpRequests(authorize -> authorize
+                        .antMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .antMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .antMatchers(HttpMethod.POST, "/members").permitAll()
                         .antMatchers("/members").hasRole("USER")
-                        .antMatchers(HttpMethod.GET, "/postings", "/postings/tagNames").permitAll()
+                        .antMatchers(HttpMethod.GET, "/postings", "/postings/*", "/postings/tagNames").permitAll()
                         .antMatchers("/postings/**").hasRole("USER")
                         .antMatchers("/comments/**").hasRole("USER")
                         .antMatchers("/tags").permitAll()
                         .antMatchers("/postingLikes").hasRole("USER")
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(new OAuth2LoginSuccessHandler(jwtTokenizer, customAuthorityUtils, memberRepository))
