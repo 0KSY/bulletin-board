@@ -1,0 +1,103 @@
+package com.solo.bulletin_board.posting.controller;
+
+import com.solo.bulletin_board.auth.userDetailsService.CustomUserDetails;
+import com.solo.bulletin_board.dto.MultiResponseDto;
+import com.solo.bulletin_board.dto.SingleResponseDto;
+import com.solo.bulletin_board.posting.dto.PostingDto;
+import com.solo.bulletin_board.posting.entity.Posting;
+import com.solo.bulletin_board.posting.mapper.PostingMapper;
+import com.solo.bulletin_board.posting.service.PostingService;
+import com.solo.bulletin_board.utils.UriCreator;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import java.net.URI;
+import java.util.List;
+
+@RestController
+@RequestMapping("/postings")
+@Validated
+public class PostingController {
+
+    private final PostingService postingService;
+    private final PostingMapper mapper;
+    private static final String POSTING_DEFAULT_URL = "/postings";
+
+    public PostingController(PostingService postingService, PostingMapper mapper) {
+        this.postingService = postingService;
+        this.mapper = mapper;
+    }
+
+    @PostMapping
+    public ResponseEntity postPosting(@RequestBody @Valid PostingDto.Post postingPostDto,
+                                      @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        Posting posting = postingService.createPosting(mapper.postingPostDtoToPosting(postingPostDto), customUserDetails);
+
+        URI location = UriCreator.createUri(POSTING_DEFAULT_URL, posting.getPostingId());
+
+        return ResponseEntity.created(location)
+                .body(new SingleResponseDto<>(mapper.postingToPostingResponseDto(posting)));
+        
+    }
+
+    @PatchMapping("/{posting-id}")
+    public ResponseEntity patchPosting(@RequestBody @Valid PostingDto.Patch postingPatchDto,
+                                       @PathVariable("posting-id") @Positive long postingId,
+                                       @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        postingPatchDto.setPostingId(postingId);
+
+        Posting posting = postingService.updatePosting(mapper.postingPatchDtoToPosting(postingPatchDto), customUserDetails);
+
+        return new ResponseEntity(new SingleResponseDto<>(mapper.postingToPostingResponseDto(posting)), HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{posting-id}")
+    public ResponseEntity getPosting(@PathVariable("posting-id") @Positive long postingId){
+
+        Posting posting = postingService.findPosting(postingId);
+
+        return new ResponseEntity(new SingleResponseDto<>(mapper.postingToPostingResponseDto(posting)),HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity getPostings(@RequestParam @Positive int page,
+                                      @RequestParam @Positive int size){
+
+        Page<Posting> pagePostings = postingService.findPostings(page-1, size);
+        List<Posting> postings = pagePostings.getContent();
+
+        return new ResponseEntity(
+                new MultiResponseDto<>(mapper.postingsToPostingInfoResponseDtos(postings), pagePostings), HttpStatus.OK);
+    }
+
+    @GetMapping("/tagNames")
+    public ResponseEntity getPostingsByTag(@RequestParam String tagName,
+                                           @RequestParam @Positive int page,
+                                           @RequestParam @Positive int size){
+
+        Page<Posting> pagePostings = postingService.findPostingsByTagName(tagName, page-1, size);
+        List<Posting> postings = pagePostings.getContent();
+
+        return new ResponseEntity(
+                new MultiResponseDto<>(mapper.postingsToPostingInfoResponseDtos(postings), pagePostings), HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("/{posting-id}")
+    public ResponseEntity deletePosting(@PathVariable("posting-id") @Positive long postingId,
+                                        @AuthenticationPrincipal CustomUserDetails customUserDetails){
+
+        postingService.deletePosting(postingId, customUserDetails);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+}
