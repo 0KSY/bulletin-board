@@ -110,7 +110,7 @@ public class CommentControllerTest {
                                 List.of(
                                         fieldWithPath("content").description("댓글 내용"),
                                         fieldWithPath("postingId").description("게시글 식별자"),
-                                        fieldWithPath("parentId").description("부모 댓글 식별자").optional()
+                                        fieldWithPath("parentId").description("부모 댓글 식별자 (optional)").optional()
                                 )
                         ),
                         responseHeaders(
