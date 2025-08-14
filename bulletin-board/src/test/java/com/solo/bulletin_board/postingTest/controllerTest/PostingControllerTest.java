@@ -201,7 +201,7 @@ public class PostingControllerTest {
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목"),
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용"),
                                         fieldWithPath("postingTagDtos").type(JsonFieldType.ARRAY)
-                                                .description("태그 생성 정보").optional(),
+                                                .description("태그 생성 정보 (optional)").optional(),
                                         fieldWithPath("postingTagDtos[].tagName").type(JsonFieldType.STRING)
                                                 .description("태그 이름")
                                 )
@@ -288,7 +288,7 @@ public class PostingControllerTest {
                                         fieldWithPath("title").type(JsonFieldType.STRING).description("게시글 제목").optional(),
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("게시글 내용").optional(),
                                         fieldWithPath("postingTagDtos").type(JsonFieldType.ARRAY)
-                                                .description("태그 생성 정보").optional(),
+                                                .description("태그 생성 정보 (optional)").optional(),
                                         fieldWithPath("postingTagDtos[].tagName").type(JsonFieldType.STRING)
                                                 .description("태그 이름")
                                 )
@@ -370,7 +370,6 @@ public class PostingControllerTest {
 
         ResultActions resultActions = mockMvc.perform(
                 get("/postings/{posting-id}", 1)
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -382,9 +381,6 @@ public class PostingControllerTest {
                         getResponsePreprocessor(),
                         pathParameters(
                                 parameterWithName("posting-id").description("게시글 식별자")
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token")
                         ),
                         responseFields(
                                 List.of(
@@ -464,7 +460,6 @@ public class PostingControllerTest {
                 get("/postings")
                         .queryParam("page", "1")
                         .queryParam("size", "5")
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -482,9 +477,6 @@ public class PostingControllerTest {
                                         parameterWithName("page").description("페이지 번호"),
                                         parameterWithName("size").description("페이지 크기")
                                 )
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token")
                         ),
                         responseFields(
                                 List.of(
@@ -530,10 +522,9 @@ public class PostingControllerTest {
 
         ResultActions resultActions = mockMvc.perform(
                 get("/postings/tagNames")
-                        .queryParam("tagName", "태그이름")
+                        .queryParam("tagName", "tag")
                         .queryParam("page", "1")
                         .queryParam("size", "5")
-                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
                         .accept(MediaType.APPLICATION_JSON)
         );
 
@@ -552,9 +543,6 @@ public class PostingControllerTest {
                                         parameterWithName("page").description("페이지 번호"),
                                         parameterWithName("size").description("페이지 크기")
                                 )
-                        ),
-                        requestHeaders(
-                                headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token")
                         ),
                         responseFields(
                                 List.of(
