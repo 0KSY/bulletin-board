@@ -26,7 +26,6 @@ public class MemberDto {
     @Setter
     public static class Patch{
 
-        private long memberId;
         private String nickname;
         private Member.MemberStatus memberStatus;
     }
