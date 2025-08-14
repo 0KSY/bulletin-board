@@ -171,7 +171,8 @@ public class CommentControllerTest {
                         requestFields(
                                 List.of(
                                         fieldWithPath("commentId").type(JsonFieldType.NUMBER).description("댓글 식별자").ignored(),
-                                        fieldWithPath("content").type(JsonFieldType.STRING).description("댓글 내용").optional()
+                                        fieldWithPath("content").type(JsonFieldType.STRING)
+                                                .description("댓글 내용 (optional) ").optional()
                                 )
                         ),
                         responseFields(
