@@ -56,6 +56,8 @@ dependencies {
 	runtimeOnly	'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+	implementation 'mysql:mysql-connector-java:8.0.28'
 }
 
 tasks.named('test') {
