@@ -134,7 +134,7 @@ public class MemberControllerTest {
         String requestBody = gson.toJson(memberPatchDto);
 
         given(mapper.memberPatchDtoToMember(Mockito.any(MemberDto.Patch.class))).willReturn(new Member());
-        given(memberService.updateMember(Mockito.any(Member.class))).willReturn(new Member());
+        given(memberService.updateMember(Mockito.any(Member.class), Mockito.any(long.class))).willReturn(new Member());
         given(mapper.memberToMemberResponseDto(Mockito.any(Member.class))).willReturn(response);
 
         ResultActions resultActions = mockMvc.perform(
@@ -158,10 +158,11 @@ public class MemberControllerTest {
                         ),
                         requestFields(
                                 List.of(
-                                        fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별자").ignored(),
-                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임").optional(),
+                                        fieldWithPath("nickname").type(JsonFieldType.STRING).description("닉네임 (optional)")
+                                                .optional(),
                                         fieldWithPath("memberStatus").type(JsonFieldType.STRING)
-                                                .description("회원 상태 : MEMBER_ACTIVE / MEMBER_SLEEP / MEMBER_QUIT").optional()
+                                                .description("회원 상태 : MEMBER_ACTIVE / MEMBER_SLEEP / MEMBER_QUIT (optional)" )
+                                                .optional()
                                 )
                         ),
                         responseFields(

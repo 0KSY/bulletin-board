@@ -84,9 +84,9 @@ public class MemberService {
         return memberRepository.save(member);
     }
 
-    public Member updateMember(Member member){
+    public Member updateMember(Member member, long memberId){
 
-        Member findMember = findVerifiedMember(member.getMemberId());
+        Member findMember = findVerifiedMember(memberId);
 
         Optional.ofNullable(member.getNickname())
                 .ifPresent(nickname -> {

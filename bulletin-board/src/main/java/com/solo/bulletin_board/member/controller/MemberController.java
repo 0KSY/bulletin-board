@@ -45,9 +45,7 @@ public class MemberController {
     public ResponseEntity patchMember(@RequestBody @Valid MemberDto.Patch memberPatchDto,
                                       @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
-        memberPatchDto.setMemberId(customUserDetails.getMemberId());
-
-        Member member = memberService.updateMember(mapper.memberPatchDtoToMember(memberPatchDto));
+        Member member = memberService.updateMember(mapper.memberPatchDtoToMember(memberPatchDto), customUserDetails.getMemberId());
 
         return new ResponseEntity(new SingleResponseDto<>(mapper.memberToMemberResponseDto(member)), HttpStatus.OK);
 
