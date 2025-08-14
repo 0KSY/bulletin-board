@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,8 +18,11 @@ public class PostingDto {
     @Getter
     @Setter
     public static class Post{
+        @NotBlank
         private String title;
+        @NotBlank
         private String content;
+        @Valid
         private List<PostingTagDto> postingTagDtos;
     }
 
@@ -27,6 +32,7 @@ public class PostingDto {
         private long postingId;
         private String title;
         private String content;
+        @Valid
         private List<PostingTagDto> postingTagDtos;
     }
 

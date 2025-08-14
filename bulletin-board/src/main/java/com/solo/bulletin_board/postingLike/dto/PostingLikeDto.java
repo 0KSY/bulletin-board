@@ -4,11 +4,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Positive;
+
 public class PostingLikeDto {
 
     @Getter
     @Setter
     public static class Post{
+        @Positive
         private long postingId;
     }
 
