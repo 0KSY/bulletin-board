@@ -40,7 +40,7 @@ public class PostingService {
         this.memberService = memberService;
     }
 
-    Posting findVerifiedPosting(long postingId){
+    public Posting findVerifiedPosting(long postingId){
         Optional<Posting> optionalPosting = postingRepository.findById(postingId);
 
         Posting findPosting = optionalPosting

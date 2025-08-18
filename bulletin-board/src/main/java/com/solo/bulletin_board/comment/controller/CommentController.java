@@ -39,7 +39,7 @@ public class CommentController {
 
         URI location = UriCreator.createUri(COMMENT_DEFAULT_URL, comment.getCommentId());
 
-        return ResponseEntity.created(location).build();
+        return ResponseEntity.created(location).body(new SingleResponseDto<>(mapper.commentToCommentResponseDto(comment)));
     }
 
     @PatchMapping("/{comment-id}")
