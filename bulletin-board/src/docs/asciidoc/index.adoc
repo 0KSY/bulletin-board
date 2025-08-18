@@ -252,6 +252,12 @@ include::{snippets}/post-comment/request-fields.adoc[]
 .http-response
 include::{snippets}/post-comment/http-response.adoc[]
 
+.response-headers
+include::{snippets}/post-comment/response-headers.adoc[]
+
+.response-fields
+include::{snippets}/post-comment/response-fields.adoc[]
+
 
 === 댓글 수정
 .curl-request
