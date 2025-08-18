@@ -7,6 +7,8 @@ import com.solo.bulletin_board.exception.BusinessLogicException;
 import com.solo.bulletin_board.exception.ExceptionCode;
 import com.solo.bulletin_board.member.entity.Member;
 import com.solo.bulletin_board.member.service.MemberService;
+import com.solo.bulletin_board.posting.entity.Posting;
+import com.solo.bulletin_board.posting.service.PostingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +20,13 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final MemberService memberService;
+    private final PostingService postingService;
 
-    public CommentService(CommentRepository commentRepository, MemberService memberService) {
+
+    public CommentService(CommentRepository commentRepository, MemberService memberService, PostingService postingService) {
         this.commentRepository = commentRepository;
         this.memberService = memberService;
+        this.postingService = postingService;
     }
 
     public Comment findVerifiedComment(long commentId){
@@ -37,7 +42,9 @@ public class CommentService {
     public Comment createComment(Comment comment, CustomUserDetails customUserDetails){
 
         Member findMember = memberService.findVerifiedMember(customUserDetails.getMemberId());
+        Posting findPosting = postingService.findVerifiedPosting(comment.getPosting().getPostingId());
         comment.setMember(findMember);
+        comment.setPosting(findPosting);
 
         return commentRepository.save(comment);
     }
