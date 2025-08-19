@@ -63,6 +63,7 @@ public class MemberControllerTest {
                 .memberId(1L)
                 .email("hgd@naver.com")
                 .nickname("홍길동")
+                .image("imageUrl")
                 .memberStatus(Member.MemberStatus.MEMBER_ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
@@ -171,6 +172,7 @@ public class MemberControllerTest {
                                         fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                         fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                        fieldWithPath("data.image").type(JsonFieldType.STRING).description("이미지 url"),
                                         fieldWithPath("data.memberStatus").type(JsonFieldType.STRING)
                                                 .description("회원 상태 : MEMBER_ACTIVE / MEMBER_SLEEP / MEMBER_QUIT"),
                                         fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
@@ -207,6 +209,7 @@ public class MemberControllerTest {
                                         fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
                                         fieldWithPath("data.email").type(JsonFieldType.STRING).description("이메일"),
                                         fieldWithPath("data.nickname").type(JsonFieldType.STRING).description("닉네임"),
+                                        fieldWithPath("data.image").type(JsonFieldType.STRING).description("이미지 url"),
                                         fieldWithPath("data.memberStatus").type(JsonFieldType.STRING)
                                                 .description("회원 상태 : MEMBER_ACTIVE / MEMBER_SLEEP / MEMBER_QUIT"),
                                         fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),

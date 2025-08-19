@@ -45,10 +45,19 @@ public class MemberDto {
         private long memberId;
         private String email;
         private String nickname;
+        private String image;
         private Member.MemberStatus memberStatus;
         private LocalDateTime createdAt;
         private LocalDateTime modifiedAt;
 
+    }
+
+    @Getter
+    @Setter
+    @Builder
+    public static class ImageResponse{
+        private long memberId;
+        private String image;
     }
 
     @Getter
