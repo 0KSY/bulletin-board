@@ -30,6 +30,8 @@ public class Member extends Auditable {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    private String image;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus = MemberStatus.MEMBER_ACTIVE;
