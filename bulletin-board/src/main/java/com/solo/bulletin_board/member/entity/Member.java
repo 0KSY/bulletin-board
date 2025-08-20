@@ -1,6 +1,9 @@
 package com.solo.bulletin_board.member.entity;
 
 import com.solo.bulletin_board.audit.Auditable;
+import com.solo.bulletin_board.comment.entity.Comment;
+import com.solo.bulletin_board.posting.entity.Posting;
+import com.solo.bulletin_board.postingLike.entity.PostingLike;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +30,8 @@ public class Member extends Auditable {
     @Column(nullable = false, unique = true)
     private String nickname;
 
+    private String image;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberStatus memberStatus = MemberStatus.MEMBER_ACTIVE;
@@ -36,6 +41,15 @@ public class Member extends Auditable {
 
     @Enumerated(EnumType.STRING)
     private SignupType signupType;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Posting> postings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private List<PostingLike> postingLikes = new ArrayList<>();
 
     public enum MemberStatus{
         MEMBER_ACTIVE("활동 중"),

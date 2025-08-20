@@ -57,8 +57,23 @@ public class CommentControllerTest {
     @MockBean
     private CommentMapper mapper;
 
+    private CommentDto.Response response;
+
     @BeforeEach
     void init(){
+
+        response = CommentDto.Response.builder()
+                .commentId(1L)
+                .postingId(1L)
+                .content("댓글")
+                .createdAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .memberResponse(MemberDto.MemberResponse.builder()
+                        .memberId(1L)
+                        .email("hgd@naver.com")
+                        .nickname("홍길동")
+                        .build()
+                ).build();
 
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setMemberId(1L);
@@ -89,16 +104,20 @@ public class CommentControllerTest {
         given(mapper.commentPostDtoToComment(Mockito.any(CommentDto.Post.class))).willReturn(new Comment());
         given(commentService.createComment(Mockito.any(Comment.class), Mockito.any(CustomUserDetails.class)))
                 .willReturn(comment);
+        given(mapper.commentToCommentResponseDto(Mockito.any(Comment.class))).willReturn(response);
+
 
         ResultActions resultActions = mockMvc.perform(
                 post("/comments")
                         .header(HttpHeaders.AUTHORIZATION, "accessToken")
+                        .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
         );
 
         resultActions.andExpect(status().isCreated())
                 .andExpect(header().string("Location", is(startsWith("/comments"))))
+                .andExpect(jsonPath("$.data.commentId").value(response.getCommentId()))
                 .andDo(document(
                         "post-comment",
                         getRequestPreprocessor(),
@@ -115,8 +134,24 @@ public class CommentControllerTest {
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("리소스 위치 URI")
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("데이터"),
+                                        fieldWithPath("data.commentId").type(JsonFieldType.NUMBER).description("댓글 식별자"),
+                                        fieldWithPath("data.postingId").type(JsonFieldType.NUMBER).description("게시글 식별자"),
+                                        fieldWithPath("data.content").type(JsonFieldType.STRING).description("댓글 내용"),
+                                        fieldWithPath("data.createdAt").type(JsonFieldType.STRING).description("생성 시간"),
+                                        fieldWithPath("data.modifiedAt").type(JsonFieldType.STRING).description("수정 시간"),
+                                        fieldWithPath("data.memberResponse").type(JsonFieldType.OBJECT).description("회원 정보"),
+                                        fieldWithPath("data.memberResponse.memberId").type(JsonFieldType.NUMBER)
+                                                .description("회원 식별자"),
+                                        fieldWithPath("data.memberResponse.email").type(JsonFieldType.STRING)
+                                                .description("이메일"),
+                                        fieldWithPath("data.memberResponse.nickname").type(JsonFieldType.STRING)
+                                                .description("닉네임")
+                                )
                         )
-
                 ));
 
     }
@@ -129,19 +164,6 @@ public class CommentControllerTest {
         commentPatchDto.setContent("댓글");
 
         String requestBody = gson.toJson(commentPatchDto);
-
-        CommentDto.Response response = CommentDto.Response.builder()
-                .commentId(1L)
-                .postingId(1L)
-                .content("댓글")
-                .createdAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .memberResponse(MemberDto.MemberResponse.builder()
-                        .memberId(1L)
-                        .email("hgd@naver.com")
-                        .nickname("홍길동")
-                        .build()
-                ).build();
 
         given(mapper.commentPatchDtoToComment(Mockito.any(CommentDto.Patch.class))).willReturn(new Comment());
         given(commentService.updateComment(Mockito.any(Comment.class), Mockito.any(CustomUserDetails.class)))
@@ -191,7 +213,6 @@ public class CommentControllerTest {
                                         fieldWithPath("data.memberResponse.nickname").type(JsonFieldType.STRING)
                                                 .description("닉네임")
                                 )
-
                         )
                 ));
 
