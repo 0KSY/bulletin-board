@@ -28,6 +28,26 @@ include::{snippets}/post-member/http-response.adoc[]
 include::{snippets}/post-member/response-headers.adoc[]
 
 
+=== 이미지 등록
+.curl-request
+include::{snippets}/post-image/curl-request.adoc[]
+
+.http-request
+include::{snippets}/post-image/http-request.adoc[]
+
+.request-headers
+include::{snippets}/post-image/request-headers.adoc[]
+
+.request-parts
+include::{snippets}/post-image/request-parts.adoc[]
+
+.http-response
+include::{snippets}/post-image/http-response.adoc[]
+
+.response-fields
+include::{snippets}/post-image/response-fields.adoc[]
+
+
 === 회원 정보 수정
 .curl-request
 include::{snippets}/patch-member/curl-request.adoc[]

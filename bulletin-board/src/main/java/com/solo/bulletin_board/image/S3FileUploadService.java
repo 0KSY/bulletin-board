@@ -1,7 +1,6 @@
 package com.solo.bulletin_board.image;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.solo.bulletin_board.exception.BusinessLogicException;
@@ -12,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,21 +22,11 @@ public class S3FileUploadService {
     @Autowired
     private AmazonS3 amazonS3;
 
-    private void checkFileForm(String fileForm){
-
-        List<String> imageForm = Arrays.asList("jpg", "jpeg", "png", "gif");
-
-        if(!imageForm.contains(fileForm)){
-            throw new BusinessLogicException(ExceptionCode.FILE_TYPES_NOT_ALLOWED);
-        }
-    }
 
     public String uploadImageFile(MultipartFile file){
 
         String fileForm = file.getOriginalFilename()
                 .substring(file.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
-
-        checkFileForm(fileForm);
 
         String fileName = UUID.randomUUID() + "." + fileForm;
 

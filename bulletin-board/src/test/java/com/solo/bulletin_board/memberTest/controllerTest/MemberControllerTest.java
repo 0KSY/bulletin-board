@@ -17,11 +17,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +38,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -121,6 +125,57 @@ public class MemberControllerTest {
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("리소스 위치 URI")
                         )
+                ));
+
+    }
+
+    @Test
+    void postImageTest() throws Exception{
+
+        MemberDto.ImageResponse imageResponse = MemberDto.ImageResponse.builder()
+                .memberId(1L)
+                .image("imageUrl")
+                .build();
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile(
+                "file",
+                "image.jpg",
+                "image/jpeg",
+                "image".getBytes()
+        );
+
+        given(memberService.uploadImage(Mockito.any(MultipartFile.class), Mockito.any(long.class))).willReturn(new Member());
+        given(mapper.memberToMemberImageResponseDto(Mockito.any(Member.class))).willReturn(imageResponse);
+
+        ResultActions resultActions = mockMvc.perform(
+                multipart("/members/image")
+                        .file(mockMultipartFile)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .header(HttpHeaders.AUTHORIZATION, "accessToken")
+        );
+
+        resultActions.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.data.memberId").value(imageResponse.getMemberId()))
+                .andExpect(jsonPath("$.data.image").value(imageResponse.getImage()))
+                .andDo(document(
+                        "post-image",
+                        getRequestPreprocessor(),
+                        getResponsePreprocessor(),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token")
+                        ),
+                        requestParts(
+                                partWithName("file").description("이미지 파일")
+                        ),
+                        responseFields(
+                                List.of(
+                                        fieldWithPath("data").type(JsonFieldType.OBJECT).description("데이터"),
+                                        fieldWithPath("data.memberId").type(JsonFieldType.NUMBER).description("회원 식별자"),
+                                        fieldWithPath("data.image").type(JsonFieldType.STRING).description("이미지 url")
+                                )
+                        )
+
                 ));
 
     }

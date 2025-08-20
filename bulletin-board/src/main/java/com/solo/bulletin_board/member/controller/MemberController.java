@@ -43,7 +43,7 @@ public class MemberController {
     }
 
     @PostMapping("/image")
-    public ResponseEntity postImage(@RequestParam("file") MultipartFile multipartFile,
+    public ResponseEntity postImage(@RequestPart("file") MultipartFile multipartFile,
                                     @AuthenticationPrincipal CustomUserDetails customUserDetails){
 
         Member member = memberService.uploadImage(multipartFile, customUserDetails.getMemberId());
