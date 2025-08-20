@@ -72,6 +72,16 @@ public class MemberService {
 
     }
 
+    private void checkFileForm(String fileForm){
+
+        List<String> imageForm = Arrays.asList("jpg", "jpeg", "png", "gif");
+
+        if(!imageForm.contains(fileForm)){
+            throw new BusinessLogicException(ExceptionCode.FILE_TYPES_NOT_ALLOWED);
+        }
+    }
+
+
     public Member createMember(Member member){
 
         verifyExistsEmail(member.getEmail());
@@ -90,17 +100,25 @@ public class MemberService {
 
 
     public Member uploadImage(MultipartFile multipartFile, long memberId){
+
         Member findMember = findVerifiedMember(memberId);
 
-        if(findMember.getImage() != null){
-            s3FileUploadService.deleteImageFile(findMember.getImage());
-        }
-
         if(multipartFile.isEmpty()){
-
+            if(findMember.getImage() != null){
+                s3FileUploadService.deleteImageFile(findMember.getImage());
+            }
             findMember.setImage(null);
         }
         else{
+            String fileForm = multipartFile.getOriginalFilename()
+                    .substring(multipartFile.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+
+            checkFileForm(fileForm);
+
+            if(findMember.getImage() != null){
+                s3FileUploadService.deleteImageFile(findMember.getImage());
+            }
+
             String imageUrl = s3FileUploadService.uploadImageFile(multipartFile);
             findMember.setImage(imageUrl);
         }
