@@ -119,7 +119,7 @@ public class MemberService {
                 s3FileUploadService.deleteImageFile(findMember.getImage());
             }
 
-            String imageUrl = s3FileUploadService.uploadImageFile(multipartFile);
+            String imageUrl = s3FileUploadService.uploadImageFile(multipartFile, fileForm);
             findMember.setImage(imageUrl);
         }
 
