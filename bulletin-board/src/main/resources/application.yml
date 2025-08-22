@@ -25,9 +25,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DB_URL}:${DB_PORT}/${DB_NAME}?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Seoul
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    url: jdbc:mysql://${RDS_DB_URL}:${RDS_DB_PORT}/${DB_NAME}?useSSL=false&characterEncoding=utf8&serverTimezone=Asia/Seoul
+    username: ${RDS_MYSQL_USERNAME}
+    password: ${RDS_MYSQL_PASSWORD}
 
   jpa:
     hibernate:
@@ -44,7 +44,7 @@ spring:
           google:
             clientId: ${G_CLIENT_ID}
             clientSecret: ${G_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            redirect-uri: ${SERVER_URL}/login/oauth2/code/google
             scope:
               - email
               - profile
