@@ -23,30 +23,26 @@ public class S3FileUploadService {
     private AmazonS3 amazonS3;
 
 
-    public String uploadImageFile(MultipartFile file){
-
-        String fileForm = file.getOriginalFilename()
-                .substring(file.getOriginalFilename().lastIndexOf(".") + 1).toLowerCase();
+    public String uploadImageFile(MultipartFile multipartFile, String fileForm){
 
         String fileName = UUID.randomUUID() + "." + fileForm;
 
-
         try{
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentType(file.getContentType());
-            metadata.setContentLength(file.getSize());
+            metadata.setContentType(multipartFile.getContentType());
+            metadata.setContentLength(multipartFile.getSize());
             metadata.setContentDisposition("inline");
 
-            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, file.getInputStream(), metadata));
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileName, multipartFile.getInputStream(), metadata));
 
         }
         catch(IOException e){
             throw new BusinessLogicException(ExceptionCode.FILE_INPUT_STREAM_ERROR);
         }
 
-        String fileUrl = amazonS3.getUrl(bucketName, fileName).toString();
+        String imageUrl = amazonS3.getUrl(bucketName, fileName).toString();
 
-        return fileUrl;
+        return imageUrl;
     }
 
     public void deleteImageFile(String imageUrl){
